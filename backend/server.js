@@ -810,8 +810,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-      "https://whatsapp-web-clone-production-6fc7.up.railway.app"
+      process.env.FRONTEND_URL || "http://localhost:3000"
     ],
     methods: ["GET", "POST"],
     credentials: true
