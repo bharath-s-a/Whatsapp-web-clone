@@ -1,860 +1,3 @@
-// import React, { useState, useEffect, useRef } from 'react';
-// import { Search, MoreVertical, Paperclip, Smile, Mic, Send, Archive, Settings, Users, MessageCircle, Phone, Video, Info, X, Plus } from 'lucide-react';
-
-// function App() {
-//   const [conversations, setConversations] = useState([]);
-//   const [selectedChat, setSelectedChat] = useState(null);
-//   const [messages, setMessages] = useState([]);
-//   const [newMessage, setNewMessage] = useState('');
-//   const [loading, setLoading] = useState(true);
-//   const [isOnline, setIsOnline] = useState(false);
-//   const [isTyping, setIsTyping] = useState(false);
-//   const [sendingMessage, setSendingMessage] = useState(false);
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [activeTab, setActiveTab] = useState('All');
-  
-//   const messagesEndRef = useRef(null);
-//   const inputRef = useRef(null);
-
-//   // Persistent messages storage
-//   const [conversationMessages, setConversationMessages] = useState({});
-
-//   // Load data from localStorage on component mount
-//   useEffect(() => {
-//     const loadStoredData = () => {
-//       try {
-//         // Load conversations
-//         const storedConversations = JSON.parse(localStorage.getItem('whatsapp_conversations') || '[]');
-//         const storedMessages = JSON.parse(localStorage.getItem('whatsapp_messages') || '{}');
-        
-//         if (storedConversations.length > 0) {
-//           setConversations(storedConversations);
-//           setConversationMessages(storedMessages);
-//         } else {
-//           // Initialize with sample data if no stored data
-//           initializeSampleData();
-//         }
-//       } catch (error) {
-//         console.error('Error loading stored data:', error);
-//         initializeSampleData();
-//       }
-//     };
-
-//     const initializeSampleData = () => {
-//       const sampleConversations = [
-//         {
-//           _id: { userNumber: '919876543210', userName: 'Neha Sharma' },
-//           lastMessage: 'Hello! I\'m interested in your services',
-//           lastTimestamp: Date.now() / 1000 - 300,
-//           unreadCount: 2,
-//           isOnline: true
-//         },
-//         {
-//           _id: { userNumber: '919876543211', userName: 'Ravi Kumar' },
-//           lastMessage: 'Can you share more details about pricing?',
-//           lastTimestamp: Date.now() / 1000 - 1800,
-//           unreadCount: 1,
-//           isOnline: false
-//         },
-//         {
-//           _id: { userNumber: '919876543212', userName: 'Priya Singh' },
-//           lastMessage: 'Thank you for the quick response!',
-//           lastTimestamp: Date.now() / 1000 - 3600,
-//           unreadCount: 0,
-//           isOnline: true
-//         },
-//         {
-//           _id: { userNumber: '919876543213', userName: 'Amit Patel' },
-//           lastMessage: 'Are you available for a call today?',
-//           lastTimestamp: Date.now() / 1000 - 7200,
-//           unreadCount: 0,
-//           isOnline: false
-//         }
-//       ];
-
-//       const initialMessages = {
-//         '919876543210': [
-//           {
-//             messageId: '1',
-//             messageText: 'Hello! I\'m interested in your services',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 1800,
-//             status: 'read',
-//             isRead: false
-//           },
-//           {
-//             messageId: '2',
-//             messageText: 'Hi Neha! Thank you for reaching out. We offer comprehensive digital marketing services. What specifically are you looking for?',
-//             isFromUser: false,
-//             timestamp: Date.now() / 1000 - 1700,
-//             status: 'read'
-//           },
-//           {
-//             messageId: '3',
-//             messageText: 'I need help with social media marketing for my boutique',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 1600,
-//             status: 'read',
-//             isRead: false
-//           },
-//           {
-//             messageId: '4',
-//             messageText: 'Perfect! We can definitely help you with that.',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 300,
-//             status: 'read',
-//             isRead: false
-//           }
-//         ],
-//         '919876543211': [
-//           {
-//             messageId: '5',
-//             messageText: 'Can you share more details about pricing?',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 1800,
-//             status: 'read',
-//             isRead: false
-//           },
-//           {
-//             messageId: '6',
-//             messageText: 'Sure! Our pricing starts from ₹15,000/month for basic packages. Would you like a detailed quote?',
-//             isFromUser: false,
-//             timestamp: Date.now() / 1000 - 1700,
-//             status: 'delivered'
-//           }
-//         ],
-//         '919876543212': [
-//           {
-//             messageId: '7',
-//             messageText: 'Thank you for the quick response!',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 3600,
-//             status: 'read',
-//             isRead: true
-//           },
-//           {
-//             messageId: '8',
-//             messageText: 'You\'re welcome! We\'re always here to help. Is there anything specific you\'d like to know?',
-//             isFromUser: false,
-//             timestamp: Date.now() / 1000 - 3500,
-//             status: 'sent'
-//           }
-//         ],
-//         '919876543213': [
-//           {
-//             messageId: '9',
-//             messageText: 'Are you available for a call today?',
-//             isFromUser: true,
-//             timestamp: Date.now() / 1000 - 7200,
-//             status: 'read',
-//             isRead: true
-//           }
-//         ]
-//       };
-      
-//       setConversations(sampleConversations);
-//       setConversationMessages(initialMessages);
-      
-//       // Save to localStorage
-//       localStorage.setItem('whatsapp_conversations', JSON.stringify(sampleConversations));
-//       localStorage.setItem('whatsapp_messages', JSON.stringify(initialMessages));
-//     };
-
-//     loadStoredData();
-//     setLoading(false);
-//     setIsOnline(true);
-//   }, []);
-
-//   // Save conversations to localStorage whenever they change
-//   useEffect(() => {
-//     if (conversations.length > 0) {
-//       localStorage.setItem('whatsapp_conversations', JSON.stringify(conversations));
-//     }
-//   }, [conversations]);
-
-//   // Save messages to localStorage whenever they change
-//   useEffect(() => {
-//     if (Object.keys(conversationMessages).length > 0) {
-//       localStorage.setItem('whatsapp_messages', JSON.stringify(conversationMessages));
-//     }
-//   }, [conversationMessages]);
-
-//   // Load messages when chat is selected
-//   useEffect(() => {
-//     if (selectedChat) {
-//       const chatMessages = conversationMessages[selectedChat.userNumber] || [];
-//       setMessages(chatMessages);
-//       scrollToBottom();
-//     }
-//   }, [selectedChat, conversationMessages]);
-
-//   const scrollToBottom = () => {
-//     setTimeout(() => {
-//       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-//     }, 100);
-//   };
-
-//   useEffect(() => {
-//     scrollToBottom();
-//   }, [messages]);
-
-//   const sendMessage = () => {
-//     if (!newMessage.trim() || !selectedChat || sendingMessage) return;
-
-//     setSendingMessage(true);
-//     const messageToSend = newMessage.trim();
-//     setNewMessage('');
-    
-//     const newMsg = {
-//       messageId: Date.now().toString(),
-//       messageText: messageToSend,
-//       isFromUser: false,
-//       timestamp: Date.now() / 1000,
-//       status: 'sent'
-//     };
-
-//     // Update messages for current conversation
-//     const updatedMessages = [...(conversationMessages[selectedChat.userNumber] || []), newMsg];
-    
-//     setConversationMessages(prev => ({
-//       ...prev,
-//       [selectedChat.userNumber]: updatedMessages
-//     }));
-    
-//     setMessages(updatedMessages);
-    
-//     // Update conversation preview
-//     setConversations(prev => 
-//       prev.map(conv => 
-//         conv._id.userNumber === selectedChat.userNumber 
-//           ? { ...conv, lastMessage: messageToSend, lastTimestamp: Date.now() / 1000 }
-//           : conv
-//       )
-//     );
-    
-//     // Simulate message status updates
-//     setTimeout(() => {
-//       const deliveredMessages = updatedMessages.map(msg => 
-//         msg.messageId === newMsg.messageId ? { ...msg, status: 'delivered' } : msg
-//       );
-      
-//       setConversationMessages(prev => ({
-//         ...prev,
-//         [selectedChat.userNumber]: deliveredMessages
-//       }));
-      
-//       if (selectedChat.userNumber === selectedChat.userNumber) {
-//         setMessages(deliveredMessages);
-//       }
-//     }, 1000);
-
-//     // Mark as read after 3 seconds
-//     setTimeout(() => {
-//       const readMessages = updatedMessages.map(msg => 
-//         msg.messageId === newMsg.messageId ? { ...msg, status: 'read' } : msg
-//       );
-      
-//       setConversationMessages(prev => ({
-//         ...prev,
-//         [selectedChat.userNumber]: readMessages
-//       }));
-      
-//       if (selectedChat.userNumber === selectedChat.userNumber) {
-//         setMessages(readMessages);
-//       }
-//     }, 3000);
-
-//     setTimeout(() => {
-//       setSendingMessage(false);
-//       inputRef.current?.focus();
-//     }, 500);
-//   };
-
-//   const selectChat = (conversation) => {
-//     setSelectedChat({
-//       userNumber: conversation._id.userNumber,
-//       userName: conversation._id.userName,
-//       isOnline: conversation.isOnline
-//     });
-    
-//     // Mark messages as read
-//     if (conversation.unreadCount > 0) {
-//       setConversationMessages(prev => {
-//         const chatMessages = prev[conversation._id.userNumber] || [];
-//         const updatedMessages = chatMessages.map(msg => 
-//           msg.isFromUser ? { ...msg, isRead: true } : msg
-//         );
-        
-//         return {
-//           ...prev,
-//           [conversation._id.userNumber]: updatedMessages
-//         };
-//       });
-      
-//       // Update conversation unread count
-//       setConversations(prev => 
-//         prev.map(conv => 
-//           conv._id.userNumber === conversation._id.userNumber 
-//             ? { ...conv, unreadCount: 0 }
-//             : conv
-//         )
-//       );
-//     }
-//   };
-
-//   const formatTime = (timestamp) => {
-//     const now = new Date();
-//     const msgTime = new Date(timestamp * 1000);
-//     const diff = now - msgTime;
-//     const hours = Math.floor(diff / (1000 * 60 * 60));
-//     const days = Math.floor(hours / 24);
-    
-//     if (hours < 24) {
-//       return msgTime.toLocaleTimeString('en-US', {
-//         hour: '2-digit',
-//         minute: '2-digit',
-//         hour12: false
-//       });
-//     } else if (days === 1) {
-//       return 'Yesterday';
-//     } else if (days < 7) {
-//       return msgTime.toLocaleDateString('en-US', { weekday: 'short' });
-//     } else {
-//       return msgTime.toLocaleDateString('en-US', { 
-//         day: '2-digit',
-//         month: '2-digit'
-//       });
-//     }
-//   };
-
-//   const simulateUserMessage = () => {
-//     if (!selectedChat) return;
-    
-//     const customerMessages = [
-//       "That sounds perfect! When can we start?",
-//       "Can we schedule a call this week?",
-//       "What are your payment terms?",
-//       "I'd like to see some of your previous work",
-//       "Do you have any case studies to share?",
-//       "This is exactly what I was looking for!",
-//       "Can you send me a detailed proposal?",
-//       "What's the timeline for this project?"
-//     ];
-    
-//     const randomMessage = customerMessages[Math.floor(Math.random() * customerMessages.length)];
-    
-//     setIsTyping(true);
-//     setTimeout(() => {
-//       setIsTyping(false);
-      
-//       const newMsg = {
-//         messageId: Date.now().toString(),
-//         messageText: randomMessage,
-//         isFromUser: true,
-//         timestamp: Date.now() / 1000,
-//         status: 'read',
-//         isRead: false // New message from user is unread
-//       };
-      
-//       const updatedMessages = [...(conversationMessages[selectedChat.userNumber] || []), newMsg];
-      
-//       setConversationMessages(prev => ({
-//         ...prev,
-//         [selectedChat.userNumber]: updatedMessages
-//       }));
-      
-//       setMessages(updatedMessages);
-      
-//       // Update conversation with unread count
-//       setConversations(prev => 
-//         prev.map(conv => 
-//           conv._id.userNumber === selectedChat.userNumber 
-//             ? { 
-//                 ...conv, 
-//                 lastMessage: randomMessage, 
-//                 lastTimestamp: Date.now() / 1000,
-//                 unreadCount: conv.unreadCount + 1
-//               }
-//             : conv
-//         )
-//       );
-//     }, 2000);
-//   };
-
-//   const getStatusIcon = (status) => {
-//     switch (status) {
-//       case 'sent':
-//         return (
-//           <div className="flex items-center">
-//             <svg className="w-4 h-4 text-gray-400" viewBox="0 0 16 15" fill="currentColor">
-//               <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
-//             </svg>
-//           </div>
-//         );
-//       case 'delivered':
-//         return (
-//           <div className="flex items-center">
-//             <svg className="w-4 h-4 text-gray-400" viewBox="0 0 16 15" fill="currentColor">
-//               <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.91-1.909a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l2.258 2.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
-//               <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
-//             </svg>
-//           </div>
-//         );
-//       case 'read':
-//         return (
-//           <div className="flex items-center">
-//             <svg className="w-4 h-4 text-blue-500" viewBox="0 0 16 15" fill="currentColor">
-//               <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.91-1.909a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l2.258 2.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
-//               <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
-//             </svg>
-//           </div>
-//         );
-//       default:
-//         return null;
-//     }
-//   };
-
-//   // Filter conversations based on active tab and search
-//   const getFilteredConversations = () => {
-//     let filtered = conversations.filter(conv =>
-//       conv._id.userName.toLowerCase().includes(searchTerm.toLowerCase())
-//     );
-
-//     switch (activeTab) {
-//       case 'Unread':
-//         return filtered.filter(conv => conv.unreadCount > 0);
-//       case 'Favourites':
-//         return filtered.filter(conv => conv.isFavourite); // You can add this property
-//       case 'Groups':
-//         return filtered.filter(conv => conv.isGroup); // You can add this property
-//       default:
-//         return filtered;
-//     }
-//   };
-
-//   const filteredConversations = getFilteredConversations();
-
-//   // Clear all data function (for testing)
-//   const clearAllData = () => {
-//     localStorage.removeItem('whatsapp_conversations');
-//     localStorage.removeItem('whatsapp_messages');
-//     setConversations([]);
-//     setConversationMessages({});
-//     setMessages([]);
-//     setSelectedChat(null);
-//     window.location.reload();
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="flex items-center justify-center h-screen bg-gray-100">
-//         <div className="text-center">
-//           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-//           <div className="text-xl text-gray-600 mb-2">Loading WhatsApp...</div>
-//           <div className={`text-sm ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
-//             {isOnline ? '🟢 Connected' : '🔴 Connecting...'}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="flex h-screen bg-white">
-//       {/* Left Sidebar */}
-//       <div className="w-full md:w-96 bg-white border-r border-gray-200 flex flex-col">
-//         {/* Header */}
-//         <div className="bg-gray-100 p-4 border-b border-gray-200">
-//           <div className="flex items-center justify-between mb-4">
-//             <div className="flex items-center space-x-3">
-//               <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
-//                 <img 
-//                   src="https://ui-avatars.com/api/?name=Business&background=22c55e&color=fff&size=40" 
-//                   alt="Business" 
-//                   className="w-full h-full object-cover"
-//                 />
-//               </div>
-//               <span className="text-lg font-medium text-gray-900">WhatsApp</span>
-//             </div>
-//             <div className="flex items-center space-x-1">
-//               <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                 <Users className="w-5 h-5" />
-//               </button>
-//               <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                 <MessageCircle className="w-5 h-5" />
-//               </button>
-//               <button 
-//                 onClick={clearAllData}
-//                 className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors"
-//                 title="Clear all data"
-//               >
-//                 <MoreVertical className="w-5 h-5" />
-//               </button>
-//             </div>
-//           </div>
-          
-//           {/* Search */}
-//           <div className="relative">
-//             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//               <Search className="w-4 h-4 text-gray-500" />
-//             </div>
-//             <input
-//               type="text"
-//               placeholder="Search or start a new chat"
-//               value={searchTerm}
-//               onChange={(e) => setSearchTerm(e.target.value)}
-//               className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Tabs */}
-//         <div className="flex bg-white border-b border-gray-200 px-4">
-//           {['All', 'Unread', 'Favourites', 'Groups'].map(tab => (
-//             <button
-//               key={tab}
-//               onClick={() => setActiveTab(tab)}
-//               className={`flex-1 px-2 py-3 text-sm font-medium border-b-2 transition-colors relative ${
-//                 activeTab === tab 
-//                   ? 'text-green-600 border-green-600' 
-//                   : 'text-gray-500 hover:text-gray-700 border-transparent'
-//               }`}
-//             >
-//               {tab}
-//               {tab === 'Unread' && conversations.filter(c => c.unreadCount > 0).length > 0 && (
-//                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-//               )}
-//             </button>
-//           ))}
-//         </div>
-
-//         {/* Notification Banner */}
-//         <div className="bg-blue-50 p-3 border-b border-blue-100">
-//           <div className="flex items-start space-x-3">
-//             <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-//               <span className="text-white text-xs">🔔</span>
-//             </div>
-//             <div className="flex-1 min-w-0">
-//               <p className="text-sm font-medium text-blue-900">Turn on notifications</p>
-//               <p className="text-xs text-blue-700 mt-1">Get notified of new messages on your computer.</p>
-//               <button className="text-xs text-blue-600 underline mt-1 hover:text-blue-800">
-//                 Turn on desktop notifications →
-//               </button>
-//             </div>
-//             <button className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800">
-//               <X className="w-4 h-4" />
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Archived */}
-//         <div className="px-4 py-3 border-b border-gray-100">
-//           <div className="flex items-center space-x-3 text-gray-600 hover:bg-gray-50 rounded-lg p-2 cursor-pointer transition-colors">
-//             <Archive className="w-5 h-5" />
-//             <span className="text-sm font-medium">Archived</span>
-//           </div>
-//         </div>
-
-//         {/* Conversations List */}
-//         <div className="flex-1 overflow-y-auto">
-//           {filteredConversations.map((conv, index) => (
-//             <div
-//               key={index}
-//               onClick={() => selectChat(conv)}
-//               className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${
-//                 selectedChat?.userNumber === conv._id.userNumber ? 'bg-gray-100' : ''
-//               }`}
-//             >
-//               <div className="flex items-center space-x-3">
-//                 <div className="relative flex-shrink-0">
-//                   <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-300">
-//                     <img 
-//                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(conv._id.userName || 'User')}&background=random&size=48`}
-//                       alt={conv._id.userName}
-//                       className="w-full h-full object-cover"
-//                     />
-//                   </div>
-//                   {conv.isOnline && (
-//                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-//                   )}
-//                 </div>
-//                 <div className="flex-1 min-w-0">
-//                   <div className="flex justify-between items-baseline mb-1">
-//                     <h3 className={`text-sm font-medium truncate ${conv.unreadCount > 0 ? 'text-gray-900 font-semibold' : 'text-gray-900'}`}>
-//                       {conv._id.userName || 'Unknown'}
-//                     </h3>
-//                     <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
-//                       {formatTime(conv.lastTimestamp)}
-//                     </span>
-//                   </div>
-//                   <div className="flex justify-between items-center">
-//                     <p className={`text-sm truncate flex-1 mr-2 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-//                       {conv.lastMessage}
-//                     </p>
-//                     {conv.unreadCount > 0 && (
-//                       <div className="bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
-//                         {conv.unreadCount}
-//                       </div>
-//                     )}
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-          
-//           {filteredConversations.length === 0 && (
-//             <div className="p-8 text-center text-gray-500">
-//               <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-//               <p className="font-medium">
-//                 {activeTab === 'Unread' ? 'No unread messages' : 'No conversations found'}
-//               </p>
-//               <p className="text-sm mt-2">
-//                 {activeTab === 'Unread' ? 'All caught up!' : 'Try a different search term'}
-//               </p>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Chat Area */}
-//       <div className="flex-1 flex flex-col">
-//         {selectedChat ? (
-//           <>
-//             {/* Chat Header */}
-//             <div className="bg-gray-100 px-4 py-3 border-b border-gray-200">
-//               <div className="flex items-center justify-between">
-//                 <div className="flex items-center space-x-3">
-//                   <div className="relative">
-//                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
-//                       <img 
-//                         src={`https://ui-avatars.com/api/?name=${encodeURIComponent(selectedChat.userName || 'User')}&background=random&size=40`}
-//                         alt={selectedChat.userName}
-//                         className="w-full h-full object-cover"
-//                       />
-//                     </div>
-//                     {selectedChat.isOnline && (
-//                       <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-//                     )}
-//                   </div>
-//                   <div>
-//                     <h2 className="font-medium text-gray-900">{selectedChat.userName}</h2>
-//                     <p className="text-xs text-gray-500">
-//                       {isTyping ? (
-//                         <span className="text-green-600 flex items-center">
-//                           <span>typing</span>
-//                           <span className="ml-1 flex space-x-1">
-//                             <span className="w-1 h-1 bg-green-600 rounded-full animate-bounce"></span>
-//                             <span className="w-1 h-1 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></span>
-//                             <span className="w-1 h-1 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></span>
-//                           </span>
-//                         </span>
-//                       ) : selectedChat.isOnline ? (
-//                         'online'
-//                       ) : (
-//                         'last seen recently'
-//                       )}
-//                     </p>
-//                   </div>
-//                 </div>
-                
-//                 <div className="flex items-center space-x-1">
-//                   <button 
-//                     onClick={simulateUserMessage}
-//                     disabled={isTyping}
-//                     className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-//                       isTyping 
-//                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-//                         : 'bg-blue-500 text-white hover:bg-blue-600'
-//                     }`}
-//                   >
-//                     {isTyping ? 'Typing...' : '👤 Simulate'}
-//                   </button>
-//                   <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                     <MoreVertical className="w-5 h-5" />
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* Messages Area */}
-//             <div 
-//               className="flex-1 overflow-y-auto px-4 py-4"
-//               style={{
-//                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-//                 backgroundColor: '#efeae2'
-//               }}
-//             >
-//               <div className="space-y-2">
-//                 {messages.map((msg, index) => (
-//                   <div
-//                     key={msg.messageId || index}
-//                     className={`flex ${msg.isFromUser ? 'justify-start' : 'justify-end'} animate-fade-in`}
-//                   >
-//                     <div
-//                       className={`max-w-md px-3 py-2 rounded-lg shadow-sm relative ${
-//                         msg.isFromUser
-//                           ? 'bg-white text-gray-800 rounded-tl-none'
-//                           : 'bg-green-500 text-white rounded-tr-none'
-//                       }`}
-//                     >
-//                       {/* Unread indicator for user messages */}
-//                       {msg.isFromUser && !msg.isRead && (
-//                         <div className="absolute -left-2 top-2 w-2 h-2 bg-red-500 rounded-full"></div>
-//                       )}
-//                       <p className="text-sm break-words leading-relaxed">{msg.messageText}</p>
-//                       <div className={`flex items-center justify-end space-x-1 mt-1 ${
-//                         msg.isFromUser ? 'text-gray-500' : 'text-green-100'
-//                       }`}>
-//                         <span className="text-xs">
-//                           {formatTime(msg.timestamp)}
-//                         </span>
-//                         {!msg.isFromUser && (
-//                           <div className="ml-2 flex-shrink-0">
-//                             {getStatusIcon(msg.status)}
-//                           </div>
-//                         )}
-//                       </div>
-//                     </div>
-//                   </div>
-//                 ))}
-//                 {isTyping && (
-//                   <div className="flex justify-start animate-fade-in">
-//                     <div className="bg-white px-4 py-3 rounded-lg rounded-tl-none shadow-sm">
-//                       <div className="flex space-x-1">
-//                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-//                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-//                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 )}
-//                 <div ref={messagesEndRef} />
-//               </div>
-//             </div>
-
-//             {/* Message Input */}
-//             <div className="bg-gray-100 px-4 py-3">
-//               <div className="flex items-end space-x-2">
-//                 <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                   <Smile className="w-5 h-5" />
-//                 </button>
-//                 <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                   <Paperclip className="w-5 h-5" />
-//                 </button>
-//                 <div className="flex-1">
-//                   <input
-//                     ref={inputRef}
-//                     type="text"
-//                     value={newMessage}
-//                     onChange={(e) => setNewMessage(e.target.value)}
-//                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-//                     placeholder="Type a message"
-//                     className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:border-green-500 text-sm resize-none"
-//                     disabled={sendingMessage}
-//                   />
-//                 </div>
-//                 {newMessage.trim() ? (
-//                   <button
-//                     onClick={sendMessage}
-//                     disabled={sendingMessage}
-//                     className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 disabled:opacity-50 transition-colors"
-//                   >
-//                     {sendingMessage ? (
-//                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-//                     ) : (
-//                       <Send className="w-5 h-5" />
-//                     )}
-//                   </button>
-//                 ) : (
-//                   <button className="p-2 text-gray-600 hover:bg-gray-200 rounded-full transition-colors">
-//                     <Mic className="w-5 h-5" />
-//                   </button>
-//                 )}
-//               </div>
-              
-//               {/* Connection Status */}
-//               <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-//                 <div className="flex items-center space-x-4">
-//                   <span>💼 Business Account</span>
-//                   <span className="flex items-center space-x-1">
-//                     <span>Status:</span>
-//                     <span className="text-gray-400">✓ Sent</span>
-//                     <span className="text-gray-400">✓✓ Delivered</span>
-//                     <span className="text-blue-500">✓✓ Read</span>
-//                   </span>
-//                 </div>
-//                 <span className={`flex items-center space-x-1 ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
-//                   <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}></div>
-//                   <span>{isOnline ? 'Connected' : 'Disconnected'}</span>
-//                 </span>
-//               </div>
-//             </div>
-//           </>
-//         ) : (
-//           <div className="flex-1 flex items-center justify-center bg-gray-50">
-//             <div className="text-center max-w-md">
-//               <div className="w-64 h-64 mx-auto mb-8 opacity-10">
-//                 <svg viewBox="0 0 303 172" width="303" height="172" className="w-full h-full">
-//                   <g fill="#f0f0f0">
-//                     <path d="M93.5 15.5c0-8.8 7.2-16 16-16h84c8.8 0 16 7.2 16 16v41c0 8.8-7.2 16-16 16h-84c-8.8 0-16-7.2-16-16v-41z"/>
-//                     <path d="M93.5 82.5c0-8.8 7.2-16 16-16h84c8.8 0 16 7.2 16 16v73c0 8.8-7.2 16-16 16h-84c-8.8 0-16-7.2-16-16v-73z"/>
-//                   </g>
-//                 </svg>
-//               </div>
-//               <h2 className="text-2xl font-light text-gray-600 mb-2">WhatsApp Web</h2>
-//               <p className="text-gray-500 mb-8 leading-relaxed">
-//                 Send and receive messages without keeping your phone online.<br/>
-//                 Use WhatsApp on up to 4 linked devices and 1 phone at the same time.
-//               </p>
-//               <div className="flex items-center justify-center space-x-2 text-green-600">
-//                 <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-//                 <span className="text-sm">{isOnline ? 'Connected' : 'Connecting...'}</span>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-      
-//       {/* Custom Styles */}
-//       <style jsx>{`
-//         @keyframes fade-in {
-//           from { 
-//             opacity: 0; 
-//             transform: translateY(10px) scale(0.98); 
-//           }
-//           to { 
-//             opacity: 1; 
-//             transform: translateY(0) scale(1); 
-//           }
-//         }
-//         .animate-fade-in {
-//           animation: fade-in 0.3s ease-out;
-//         }
-        
-//         /* Custom scrollbar */
-//         .overflow-y-auto::-webkit-scrollbar {
-//           width: 6px;
-//         }
-//         .overflow-y-auto::-webkit-scrollbar-track {
-//           background: transparent;
-//         }
-//         .overflow-y-auto::-webkit-scrollbar-thumb {
-//           background: rgba(0,0,0,0.2);
-//           border-radius: 3px;
-//         }
-//         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-//           background: rgba(0,0,0,0.3);
-//         }
-//       `}</style>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-
-
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -1121,17 +264,17 @@ function App() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const sendMessage = async () => {
+const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat || sendingMessage) return;
 
     setSendingMessage(true);
     const messageToSend = newMessage.trim();
     setNewMessage('');
     
-    // Create a temporary message for immediate UI update
+    // Create a temporary message for immediate UI update with 'sent' status
+    const tempMessageId = `temp_${Date.now()}`;
     const tempMessage = {
-      messageId: `temp_${Date.now()}`,
+      messageId: tempMessageId,
       messageText: messageToSend,
       isFromUser: false,
       timestamp: Date.now() / 1000,
@@ -1174,13 +317,31 @@ function App() {
         };
         
         setMessages(prev => prev.map(msg => 
-          msg.messageId === tempMessage.messageId ? actualMessage : msg
+          msg.messageId === tempMessageId ? actualMessage : msg
         ));
         
-        // Update localStorage
+        // Simulate status progression: sent -> delivered -> read
+        setTimeout(() => {
+          setMessages(prev => prev.map(msg => 
+            msg.messageId === actualMessage.messageId 
+              ? { ...msg, status: 'delivered' }
+              : msg
+          ));
+          
+          // After another 2 seconds, mark as read
+          setTimeout(() => {
+            setMessages(prev => prev.map(msg => 
+              msg.messageId === actualMessage.messageId 
+                ? { ...msg, status: 'read' }
+                : msg
+            ));
+          }, 2000);
+        }, 1000);
+        
+        // Update localStorage with the actual message
         const storedMessages = JSON.parse(localStorage.getItem('whatsapp_messages') || '{}');
         const currentMessages = storedMessages[selectedChat.userNumber] || [];
-        storedMessages[selectedChat.userNumber] = [...currentMessages.filter(m => m.messageId !== tempMessage.messageId), actualMessage];
+        storedMessages[selectedChat.userNumber] = [...currentMessages.filter(m => m.messageId !== tempMessageId), actualMessage];
         localStorage.setItem('whatsapp_messages', JSON.stringify(storedMessages));
         
         // Refresh conversations to update last message
@@ -1191,7 +352,7 @@ function App() {
       
       // Update temp message status to indicate error
       setMessages(prev => prev.map(msg => 
-        msg.messageId === tempMessage.messageId 
+        msg.messageId === tempMessageId 
           ? { ...msg, status: 'failed', error: true }
           : msg
       ));
@@ -1203,7 +364,6 @@ function App() {
     setSendingMessage(false);
     inputRef.current?.focus();
   };
-
   // Emoji functionality
   const emojis = [
     '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
@@ -1305,7 +465,13 @@ function App() {
       "Do you have any case studies to share?",
       "This is exactly what I was looking for!",
       "Can you send me a detailed proposal?",
-      "What's the timeline for this project?"
+      "What's the timeline for this project?",
+      "How do we proceed from here?",
+      "I'm ready to move forward with this!",
+      "Can you share more details about the pricing?",
+      "What's included in the package?",
+      "Do you offer any guarantees?",
+      "When would be the best time to start?"
     ];
     
     const randomMessage = customerMessages[Math.floor(Math.random() * customerMessages.length)];
@@ -1325,24 +491,33 @@ function App() {
       } else {
         // Fallback to local simulation
         const newMsg = {
-          messageId: Date.now().toString(),
+          messageId: `user_${Date.now()}`,
           messageText: randomMessage,
           isFromUser: true,
           timestamp: Date.now() / 1000,
-          status: 'read',
-          isRead: false,
+          status: 'delivered', // User messages are typically delivered
+          isRead: false, // Mark as unread initially
           fromNumber: selectedChat.userNumber,
           toNumber: '918329446654'
         };
         
         setMessages(prev => [...prev, newMsg]);
         
+        // Mark user message as read after 3 seconds (simulate reading it)
+        setTimeout(() => {
+          setMessages(prev => prev.map(msg => 
+            msg.messageId === newMsg.messageId 
+              ? { ...msg, isRead: true, status: 'read' }
+              : msg
+          ));
+        }, 3000);
+        
         // Update localStorage
         const storedMessages = JSON.parse(localStorage.getItem('whatsapp_messages') || '{}');
         storedMessages[selectedChat.userNumber] = [...(storedMessages[selectedChat.userNumber] || []), newMsg];
         localStorage.setItem('whatsapp_messages', JSON.stringify(storedMessages));
         
-        // Update conversation
+        // Update conversation with unread count
         setConversations(prev => 
           prev.map(conv => 
             conv._id.userNumber === selectedChat.userNumber 
@@ -1355,11 +530,22 @@ function App() {
               : conv
           )
         );
+        
+        // After 3 seconds, mark conversation as read (simulate reading)
+        setTimeout(() => {
+          setConversations(prev => 
+            prev.map(conv => 
+              conv._id.userNumber === selectedChat.userNumber 
+                ? { ...conv, unreadCount: 0 }
+                : conv
+            )
+          );
+        }, 3000);
       }
-    }, 2000);
+    }, Math.random() * 1500 + 1000); // Random typing delay between 1-2.5 seconds
   };
-
-  const getStatusIcon = (status, hasError = false) => {
+  
+const getStatusIcon = (status, hasError = false) => {
     if (hasError) {
       return (
         <div className="flex items-center">
@@ -1392,7 +578,7 @@ function App() {
       case 'read':
         return (
           <div className="flex items-center">
-            <svg className="w-4 h-4 text-blue-500" viewView="0 0 16 15" fill="currentColor">
+            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 16 15" fill="currentColor">
               <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.91-1.909a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l2.258 2.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
               <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
             </svg>
