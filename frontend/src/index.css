@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes tick-appear {
+  from { 
+    opacity: 0; 
+    transform: scale(0.5); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.status-tick {
+  animation: tick-appear 0.2s ease-out;
+  transition: color 0.3s ease;
+}
+
+/* Blue tick styling */
+.read-tick {
+  color: #3b82f6 !important; /* Blue color */
+  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
+}
+
+/* Message status indicators */
+.message-status {
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+}@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes tick-appear {
+  from { 
+    opacity: 0; 
+    transform: scale(0.5); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.status-tick {
+  animation: tick-appear 0.2s ease-out;
+  transition: color 0.3s ease;
+}
+
+/* Blue tick styling */
+.read-tick {
+  color: #3b82f6 !important; /* Blue color */
+  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
+}
+
+/* Message status indicators */
+.message-status {
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+}
